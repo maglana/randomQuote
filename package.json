@@ -15,6 +15,7 @@
     "@mui/icons-material": "^5.15.0",
     "@mui/material": "^5.15.0",
     "@mui/styled-engine-sc": "^6.0.0-alpha.8",
+    "@types/material-ui": "^0.21.15",
     "axios": "^1.6.2",
     "dotenv": "^16.3.1",
     "react": "^18.2.0",
@@ -22,7 +23,7 @@
     "styled-components": "^6.1.1"
   },
   "devDependencies": {
-    "@types/react": "^18.2.43",
+    "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.17",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
