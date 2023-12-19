@@ -24,11 +24,11 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 function App() {
-	const [animal, setAnimal] = useState("");
-	const [img, setImg] = useState("");
-	const [radio, setRadio] = useState("");
-	const [loading, setLoading] = useState("");
-	const [error, setError] = useState(null);
+	const [animal, setAnimal] = useState<string>("");
+	const [img, setImg] = useState<string | null>(null);
+	const [radio, setRadio] = useState<string>("");
+	const [loading, setLoading] = useState<boolean>(false);
+	const [error, setError] = useState<string | null>(null);
 
 	const handleChange = (e) => {
 		const target = e.target;
@@ -38,6 +38,42 @@ function App() {
 	};
 
 	console.log(radio);
+
+	useEffect(() => {
+		const imageUrl = "https://cataas.com/cat" + animal;
+		const waitTime = 500;
+
+		const fetchImage = async () => {
+			try {
+				const res = await fetch(imageUrl);
+				if (res.status < 200 || res.status >= 300) {
+					setError(res.status);
+					return;
+				}
+				const imageBlob = await res.blob();
+				const imageObjectURL = URL.createObjectURL(imageBlob);
+				setImg(imageObjectURL);
+				setLoading(false);
+				setError(null);
+			} catch (error) {
+				console.error("Error fetching image:", error);
+				setError("Error fetching image");
+				setLoading(false);
+			}
+		};
+
+		if (animal !== "") {
+			setLoading(true);
+			setImg(null);
+			setError(null);
+		}
+
+		const animalTimer = setTimeout(() => fetchImage(), waitTime);
+
+		return () => {
+			clearTimeout(animalTimer);
+		};
+	}, [animal, radio]);
 
 	return (
 		<div>
@@ -85,6 +121,11 @@ function App() {
 									/>
 								</RadioGroup>
 							</FormControl>
+							{!animal && (
+								<h1 style={{ marginTop: "2em" }}>
+									Use form to generate animal
+								</h1>
+							)}
 						</Item>
 					</Grid>
 					<Grid
@@ -92,7 +133,12 @@ function App() {
 						xs={6}
 					>
 						<Item>
+							{loading && <h1>Loading...</h1>}
 							<h2>Wylosowane zwierzę:</h2>
+							<img
+								src={img}
+								alt='random animal'
+							/>
 						</Item>
 					</Grid>
 				</Grid>
