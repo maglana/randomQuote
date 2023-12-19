@@ -47,7 +47,7 @@ function App() {
 			try {
 				const res = await fetch(imageUrl);
 				if (res.status < 200 || res.status >= 300) {
-					setError(res.status);
+					setError(res.status.toString());
 					return;
 				}
 				const imageBlob = await res.blob();
