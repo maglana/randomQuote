@@ -12,7 +12,6 @@ import Radio from "@mui/material/Radio";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
-
 const Item = styled(Paper)(({ theme }) => ({
 	backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
 	...theme.typography.body2,
@@ -47,7 +46,7 @@ function App() {
 			try {
 				const res = await fetch(imageUrl);
 				if (res.status < 200 || res.status >= 300) {
-					setError(res.status.toString());
+					setError(res.status);
 					return;
 				}
 				const imageBlob = await res.blob();
@@ -78,7 +77,6 @@ function App() {
 	return (
 		<div>
 			<h1>Wybierz zwierzaka!</h1>
-
 			<Box className='child'>
 				<Grid
 					container
@@ -146,5 +144,4 @@ function App() {
 		</div>
 	);
 }
-
 export default App;
