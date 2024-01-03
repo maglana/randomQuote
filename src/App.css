@@ -2,13 +2,21 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: 100vh;
+	height: 80vh;
 	background: url("../src/Images/grass-1280.jpg");
 	background-size: cover;
 	background-position: center;
 }
-img{
-	max-height: 400px;
-	max-width: 350px;
-	margin: auto;
+.WebTitle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: "Rubik Doodle Shadow";
+	font-size: 58px;
+	margin-top: 80px;
+}
+.fa-face-smile {
+	margin-left: 20px;
+	margin-top: 25px;
+	font-size: 50px;
 }
