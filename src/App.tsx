@@ -10,6 +10,21 @@ import {
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+const theme = createTheme({
+	components: {
+		MuiFormControlLabel: {
+			styleOverrides: {
+				label: {
+					fontSize: "25px",
+					marginTop: "8px",
+					fontFamily: "Ysabeau"
+				},
+			},
+		},
+	},
+});
 
 const Item = styled(Paper)(({ theme, backgroundColor }) => ({
 	backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : backgroundColor,
@@ -18,9 +33,13 @@ const Item = styled(Paper)(({ theme, backgroundColor }) => ({
 	margin: "0 60px",
 	fontSize: "30px",
 	textAlign: "center",
-	color: theme.palette.text.secondary,
+	color: "black",
 	height: "500px",
+	borderRadius: "10px",
+	border: "4px solid black", 
+	fontFamily: "Ysabeau"
 }));
+
 
 function App() {
 	const [quote, setQuote] = useState<string>("");
@@ -66,82 +85,91 @@ function App() {
 	return (
 		<div>
 			<div className='WebTitle'>
-				<h1 className='WebTitle'>Wylosuj cytat!</h1>
+				<h1 className='WebTitle'>Wylosuj cytat !</h1>
 				<i class='fa-regular fa-face-smile'></i>
 			</div>
 			<Box className='child'>
-				<Grid
-					container
-					spacing={2}
-				>
+				<ThemeProvider theme={theme}>
 					<Grid
-						item
-						xs={6}
+						container
+						spacing={2}
 					>
-						<Item
-							backgroundColor={
-								radio === "red"
-									? "red"
-									: radio === "yellow"
-									? "yellow"
-									: "green"
-							}
+						<Grid
+							item
+							xs={6}
 						>
-							<Button
-								variant='contained'
-								onClick={handleRandomQuote}
+							<Item
+								backgroundColor={
+									radio === "red"
+										? "red"
+										: radio === "yellow"
+										? "yellow"
+										: "green"
+								}
 							>
-								Losuj cytat
-							</Button>
-							<RadioGroup name='radio-buttons-group'>
-								<FormControlLabel
-									value='green'
-									label='Zmień tło na zielone :)'
-									control={<Radio />}
-									onChange={handleChange}
-								/>
-								<FormControlLabel
-									value='yellow'
-									label='Zmień tło na żółte :D'
-									control={<Radio />}
-									onChange={handleChange}
-								/>
-								<FormControlLabel
-									value='red'
-									label='Zmień tło na czerwone :P'
-									control={<Radio />}
-									onChange={handleChange}
-								/>
-							</RadioGroup>
-						</Item>
-					</Grid>
-					<Grid
-						item
-						xs={6}
-					>
-						<Item
-							backgroundColor={
-								radio === "red"
-									? "red"
-									: radio === "yellow"
-									? "yellow"
-									: "green"
-							}
+								<Button
+									variant='contained'
+									onClick={handleRandomQuote}
+									style={{
+										fontSize: "20px",
+										backgroundColor: "black",
+										borderRadius: "15px",
+										marginBottom: "60px",
+										fontFamily: "Ysabeau"
+									}}
+								>
+									Kliknij aby wylosować cytat
+								</Button>
+								<RadioGroup name='radio-buttons-group'>
+									<FormControlLabel
+										value='green'
+										label='Zmień tło na zielone'
+										control={<Radio />}
+										onChange={handleChange}
+									/>
+									<FormControlLabel
+										value='yellow'
+										label='Zmień tło na żółte'
+										control={<Radio />}
+										onChange={handleChange}
+									/>
+									<FormControlLabel
+										value='red'
+										label='Zmień tło na czerwone'
+										control={<Radio />}
+										onChange={handleChange}
+									/>
+								</RadioGroup>
+							</Item>
+						</Grid>
+						<Grid
+							item
+							xs={6}
 						>
-							{loading ? (
-								<h1>Loading...</h1>
-							) : quote ? (
-								<>
-									<h2>Wylosowany cytat:</h2>
-									<p>{quote}</p>
-									<p>- {author}</p>
-								</>
-							) : (
-								<h2>Brak dostępnych cytatów</h2>
-							)}
-						</Item>
+							<Item
+								backgroundColor={
+									radio === "red"
+										? "red"
+										: radio === "yellow"
+										? "yellow"
+										: "green"
+								}
+							>
+								{loading ? (
+									<h1>Loading...</h1>
+								) : quote ? (
+									<>
+										<h2>Wylosowany cytat:</h2>
+										<p>"{quote}"</p>
+										<p>- {author}</p>
+									</>
+								) : (
+									<h2>Brak dostępnych cytatów</h2>
+								)}
+							</Item>
+						</Grid>
 					</Grid>
-				</Grid>
+				</ThemeProvider>
 			</Box>
 		</div>
 	);
