@@ -2,32 +2,74 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import {
 	Box,
-	TextField,
+	Button,
 	FormControlLabel,
 	RadioGroup,
-	FormLabel,
-	FormControl,
+	Radio,
 } from "@mui/material";
-import Radio from "@mui/material/Radio";
 import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
-const Item = styled(Paper)(({ theme }) => ({
-	backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+const theme = createTheme({
+	components: {
+		MuiFormControlLabel: {
+			styleOverrides: {
+				label: {
+					fontSize: "25px",
+					marginTop: "8px",
+					fontFamily: "Ysabeau"
+				},
+			},
+		},
+	},
+});
+
+const Item = styled(Paper)(({ theme, backgroundColor }) => ({
+	backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : backgroundColor,
 	...theme.typography.body2,
 	padding: theme.spacing(4),
 	margin: "0 60px",
+	fontSize: "30px",
 	textAlign: "center",
-	color: theme.palette.text.secondary,
+	color: "black",
 	height: "500px",
+	borderRadius: "10px",
+	border: "4px solid black", 
+	fontFamily: "Ysabeau"
 }));
 
+
 function App() {
-	const [animal, setAnimal] = useState<string>("");
-	const [img, setImg] = useState<string | null>(null);
+	const [quote, setQuote] = useState<string>("");
+	const [author, setAuthor] = useState<string>("");
 	const [radio, setRadio] = useState<string>("");
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<string | null>(null);
+
+	const handleRandomQuote = async () => {
+		const waitTime = 500;
+
+		try {
+			const res = await fetch("https://api.quotable.io/random");
+
+			if (!res.ok) {
+				setError(`Error: ${res.status}`);
+				return;
+			}
+
+			const data = await res.json();
+			setQuote(data.content);
+			setAuthor(data.author);
+			setLoading(false);
+			setError(null);
+		} catch (error) {
+			console.error("Error fetching quote:", error);
+			setError("Error fetching quote");
+			setLoading(false);
+		}
+	};
 
 	const handleChange = (e) => {
 		const target = e.target;
@@ -36,112 +78,101 @@ function App() {
 		}
 	};
 
-	console.log(radio);
-
 	useEffect(() => {
-		const imageUrl = "https://cataas.com/cat" + animal;
-		const waitTime = 500;
-
-		const fetchImage = async () => {
-			try {
-				const res = await fetch(imageUrl);
-				if (res.status < 200 || res.status >= 300) {
-					setError(res.status);
-					return;
-				}
-				const imageBlob = await res.blob();
-				const imageObjectURL = URL.createObjectURL(imageBlob);
-				setImg(imageObjectURL);
-				setLoading(false);
-				setError(null);
-			} catch (error) {
-				console.error("Error fetching image:", error);
-				setError("Error fetching image");
-				setLoading(false);
-			}
-		};
-
-		if (animal !== "") {
-			setLoading(true);
-			setImg(null);
-			setError(null);
-		}
-
-		const animalTimer = setTimeout(() => fetchImage(), waitTime);
-
-		return () => {
-			clearTimeout(animalTimer);
-		};
-	}, [animal, radio]);
+		handleRandomQuote();
+	}, [radio]);
 
 	return (
 		<div>
-			<h1>Wybierz zwierzaka!</h1>
+			<div className='WebTitle'>
+				<h1 className='WebTitle'>Wylosuj cytat !</h1>
+				<i class='fa-regular fa-face-smile'></i>
+			</div>
 			<Box className='child'>
-				<Grid
-					container
-					spacing={2}
-				>
+				<ThemeProvider theme={theme}>
 					<Grid
-						item
-						xs={6}
+						container
+						spacing={2}
 					>
-						<Item>
-							<FormControl
-								noValidate
-								autoComplete='off'
+						<Grid
+							item
+							xs={6}
+						>
+							<Item
+								backgroundColor={
+									radio === "red"
+										? "red"
+										: radio === "yellow"
+										? "yellow"
+										: "green"
+								}
 							>
-								<TextField
-									placeholder='Add Name'
-									type='text'
-									id='pet'
-									name='pet'
-									onChange={(e) => setAnimal(e.target.value)}
-								/>
+								<Button
+									variant='contained'
+									onClick={handleRandomQuote}
+									style={{
+										fontSize: "20px",
+										backgroundColor: "black",
+										borderRadius: "15px",
+										marginBottom: "60px",
+										fontFamily: "Ysabeau"
+									}}
+								>
+									Kliknij aby wylosować cytat
+								</Button>
 								<RadioGroup name='radio-buttons-group'>
 									<FormControlLabel
 										value='green'
-										label='Green'
+										label='Zmień tło na zielone'
 										control={<Radio />}
 										onChange={handleChange}
 									/>
 									<FormControlLabel
-										value='blue'
-										label='Blue'
+										value='yellow'
+										label='Zmień tło na żółte'
 										control={<Radio />}
 										onChange={handleChange}
 									/>
 									<FormControlLabel
 										value='red'
-										label='Red'
+										label='Zmień tło na czerwone'
 										control={<Radio />}
 										onChange={handleChange}
 									/>
 								</RadioGroup>
-							</FormControl>
-							{!animal && (
-								<h1 style={{ marginTop: "2em" }}>
-									Use form to generate animal
-								</h1>
-							)}
-						</Item>
+							</Item>
+						</Grid>
+						<Grid
+							item
+							xs={6}
+						>
+							<Item
+								backgroundColor={
+									radio === "red"
+										? "red"
+										: radio === "yellow"
+										? "yellow"
+										: "green"
+								}
+							>
+								{loading ? (
+									<h1>Loading...</h1>
+								) : quote ? (
+									<>
+										<h2>Wylosowany cytat:</h2>
+										<p>"{quote}"</p>
+										<p>- {author}</p>
+									</>
+								) : (
+									<h2>Brak dostępnych cytatów</h2>
+								)}
+							</Item>
+						</Grid>
 					</Grid>
-					<Grid
-						item
-						xs={6}
-					>
-						<Item>
-							{loading && <h1>Loading...</h1>}
-							<h2>Wylosowane zwierzę:</h2>
-							<img
-								src={img}
-								alt='random animal'
-							/>
-						</Item>
-					</Grid>
-				</Grid>
+				</ThemeProvider>
 			</Box>
 		</div>
 	);
 }
+
 export default App;
